@@ -23,6 +23,11 @@ export async function onRequest(context) {
         return errorResponse("Method not allowed", 405);
     }
 
+    // 检查数据库绑定
+    if (!env.DB) {
+        return errorResponse("D1 database not bound. Please configure D1 binding in Cloudflare Dashboard.", 503);
+    }
+
     try {
         // 确保表存在
         await ensureCredentialTable(env.DB);
