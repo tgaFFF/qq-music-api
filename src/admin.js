@@ -8,8 +8,8 @@ import {
     ensureCredentialTable,
     getCredentialFromDB,
     saveCredentialToDB
-} from "../lib/credential.js";
-import { corsHeaders } from "../lib/request.js";
+} from "./lib/credential.js";
+import { corsHeaders } from "./lib/request.js";
 
 export async function onRequest(context) {
     const { request, env } = context;
