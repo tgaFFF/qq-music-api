@@ -366,38 +366,6 @@
             <div class="example">GET /api/top?id=4&num=50</div>
         </div>
 
-        <h2>凭证管理</h2>
-
-        <div class="endpoint">
-            <div class="endpoint-header">
-                <span class="method">GET</span>
-                <span class="path">/api/credential</span>
-            </div>
-            <p class="desc">获取当前凭证信息</p>
-            <div class="example">GET /api/credential</div>
-        </div>
-
-        <div class="endpoint">
-            <div class="endpoint-header">
-                <span class="method">POST</span>
-                <span class="path">/api/refresh</span>
-            </div>
-            <p class="desc">手动刷新凭证（系统每小时自动刷新）</p>
-            <table>
-                <tr>
-                    <th>参数</th>
-                    <th>类型</th>
-                    <th>说明</th>
-                </tr>
-                <tr>
-                    <td><span class="param">force</span></td>
-                    <td class="type">bool</td>
-                    <td>强制刷新 (默认 false)</td>
-                </tr>
-            </table>
-            <div class="example">POST /api/refresh?force=true</div>
-        </div>
-
         <footer>
             <a href="https://github.com/tooplick/qq-music-api" target="_blank">GitHub</a>
         </footer>
