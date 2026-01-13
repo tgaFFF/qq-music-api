@@ -14,70 +14,124 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%);
+            background: #1a1a1a;
             color: #e0e0e0;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            line-height: 1.6;
         }
 
         .container {
-            max-width: 600px;
+            max-width: 800px;
+            margin: 0 auto;
             padding: 40px 20px;
-            text-align: center;
         }
 
         h1 {
-            font-size: 2.5rem;
-            background: linear-gradient(90deg, #31c27c, #4facfe);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-size: 2rem;
+            color: #fff;
             margin-bottom: 8px;
         }
 
         .subtitle {
-            color: #888;
+            color: #666;
             margin-bottom: 40px;
         }
 
-        .api-list {
-            text-align: left;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            padding: 20px;
-        }
-
-        .api-item {
-            display: flex;
-            padding: 10px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            font-family: 'Monaco', monospace;
-            font-size: 0.9rem;
-        }
-
-        .api-item:last-child {
-            border: none;
-        }
-
-        .method {
+        h2 {
+            font-size: 1.1rem;
             color: #31c27c;
-            width: 50px;
+            margin: 30px 0 15px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 8px;
         }
 
         .endpoint {
+            background: #222;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .endpoint-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .method {
+            background: #31c27c;
+            color: #000;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .path {
+            font-family: monospace;
             color: #4facfe;
-            flex: 1;
         }
 
         .desc {
-            color: #888;
+            color: #999;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
             font-size: 0.85rem;
         }
 
+        th {
+            text-align: left;
+            color: #666;
+            font-weight: 500;
+            padding: 6px 0;
+        }
+
+        td {
+            padding: 6px 0;
+            border-top: 1px solid #333;
+        }
+
+        .param {
+            font-family: monospace;
+            color: #f0a020;
+        }
+
+        .required {
+            color: #f44;
+            font-size: 0.75rem;
+        }
+
+        .type {
+            color: #888;
+        }
+
+        code {
+            background: #333;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.85rem;
+        }
+
+        .example {
+            background: #181818;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.85rem;
+            color: #aaa;
+            margin-top: 10px;
+            overflow-x: auto;
+        }
+
         footer {
-            margin-top: 40px;
-            color: #555;
+            margin-top: 50px;
+            text-align: center;
+            color: #444;
             font-size: 0.85rem;
         }
 
@@ -90,22 +144,258 @@
 
 <body>
     <div class="container">
-        <h1>🎵 QQ Music API</h1>
-        <p class="subtitle">Cloudflare Pages + D1</p>
+        <h1>QQ Music API</h1>
+        <p class="subtitle">基于 Cloudflare Pages + D1 的 QQ 音乐 API 服务</p>
 
-        <div class="api-list">
-            <div class="api-item"><span class="method">GET</span><span class="endpoint">/api/search?keyword=xxx</span>
+        <h2>搜索</h2>
+
+        <div class="endpoint">
+            <div class="endpoint-header">
+                <span class="method">GET</span>
+                <span class="path">/api/search</span>
             </div>
-            <div class="api-item"><span class="method">GET</span><span class="endpoint">/api/song/url?mid=xxx</span>
+            <p class="desc">搜索歌曲、歌手、专辑或歌单</p>
+            <table>
+                <tr>
+                    <th>参数</th>
+                    <th>类型</th>
+                    <th>说明</th>
+                </tr>
+                <tr>
+                    <td><span class="param">keyword</span> <span class="required">*</span></td>
+                    <td class="type">string</td>
+                    <td>搜索关键词</td>
+                </tr>
+                <tr>
+                    <td><span class="param">type</span></td>
+                    <td class="type">string</td>
+                    <td>搜索类型: song, singer, album, playlist (默认 song)</td>
+                </tr>
+                <tr>
+                    <td><span class="param">num</span></td>
+                    <td class="type">int</td>
+                    <td>返回数量 (默认 10)</td>
+                </tr>
+                <tr>
+                    <td><span class="param">page</span></td>
+                    <td class="type">int</td>
+                    <td>页码 (默认 1)</td>
+                </tr>
+            </table>
+            <div class="example">GET /api/search?keyword=周杰伦&type=song&num=20</div>
+        </div>
+
+        <h2>歌曲</h2>
+
+        <div class="endpoint">
+            <div class="endpoint-header">
+                <span class="method">GET</span>
+                <span class="path">/api/song/url</span>
             </div>
-            <div class="api-item"><span class="method">GET</span><span class="endpoint">/api/song/detail?mid=xxx</span>
+            <p class="desc">获取歌曲播放链接</p>
+            <table>
+                <tr>
+                    <th>参数</th>
+                    <th>类型</th>
+                    <th>说明</th>
+                </tr>
+                <tr>
+                    <td><span class="param">mid</span> <span class="required">*</span></td>
+                    <td class="type">string</td>
+                    <td>歌曲 MID，多个用逗号分隔</td>
+                </tr>
+                <tr>
+                    <td><span class="param">quality</span></td>
+                    <td class="type">string</td>
+                    <td>音质: 128, 320, flac (默认 128)</td>
+                </tr>
+            </table>
+            <div class="example">GET /api/song/url?mid=0039MnYb0qxYhV&quality=320</div>
+        </div>
+
+        <div class="endpoint">
+            <div class="endpoint-header">
+                <span class="method">GET</span>
+                <span class="path">/api/song/detail</span>
             </div>
-            <div class="api-item"><span class="method">GET</span><span class="endpoint">/api/lyric?mid=xxx</span></div>
-            <div class="api-item"><span class="method">GET</span><span class="endpoint">/api/album?mid=xxx</span></div>
-            <div class="api-item"><span class="method">GET</span><span class="endpoint">/api/playlist?id=xxx</span>
+            <p class="desc">获取歌曲详细信息</p>
+            <table>
+                <tr>
+                    <th>参数</th>
+                    <th>类型</th>
+                    <th>说明</th>
+                </tr>
+                <tr>
+                    <td><span class="param">mid</span></td>
+                    <td class="type">string</td>
+                    <td>歌曲 MID (mid 或 id 二选一)</td>
+                </tr>
+                <tr>
+                    <td><span class="param">id</span></td>
+                    <td class="type">int</td>
+                    <td>歌曲 ID</td>
+                </tr>
+            </table>
+            <div class="example">GET /api/song/detail?mid=0039MnYb0qxYhV</div>
+        </div>
+
+        <h2>歌词</h2>
+
+        <div class="endpoint">
+            <div class="endpoint-header">
+                <span class="method">GET</span>
+                <span class="path">/api/lyric</span>
             </div>
-            <div class="api-item"><span class="method">GET</span><span class="endpoint">/api/singer?mid=xxx</span></div>
-            <div class="api-item"><span class="method">GET</span><span class="endpoint">/api/top</span></div>
+            <p class="desc">获取歌词，支持 LRC、QRC（自动解密）、翻译、罗马音</p>
+            <table>
+                <tr>
+                    <th>参数</th>
+                    <th>类型</th>
+                    <th>说明</th>
+                </tr>
+                <tr>
+                    <td><span class="param">mid</span></td>
+                    <td class="type">string</td>
+                    <td>歌曲 MID (mid 或 id 二选一)</td>
+                </tr>
+                <tr>
+                    <td><span class="param">id</span></td>
+                    <td class="type">int</td>
+                    <td>歌曲 ID</td>
+                </tr>
+            </table>
+            <div class="example">GET /api/lyric?mid=0039MnYb0qxYhV</div>
+        </div>
+
+        <h2>专辑 / 歌单 / 歌手</h2>
+
+        <div class="endpoint">
+            <div class="endpoint-header">
+                <span class="method">GET</span>
+                <span class="path">/api/album</span>
+            </div>
+            <p class="desc">获取专辑详情</p>
+            <table>
+                <tr>
+                    <th>参数</th>
+                    <th>类型</th>
+                    <th>说明</th>
+                </tr>
+                <tr>
+                    <td><span class="param">mid</span></td>
+                    <td class="type">string</td>
+                    <td>专辑 MID</td>
+                </tr>
+            </table>
+            <div class="example">GET /api/album?mid=002fRO0N4FftzY</div>
+        </div>
+
+        <div class="endpoint">
+            <div class="endpoint-header">
+                <span class="method">GET</span>
+                <span class="path">/api/playlist</span>
+            </div>
+            <p class="desc">获取歌单详情及歌曲列表</p>
+            <table>
+                <tr>
+                    <th>参数</th>
+                    <th>类型</th>
+                    <th>说明</th>
+                </tr>
+                <tr>
+                    <td><span class="param">id</span> <span class="required">*</span></td>
+                    <td class="type">int</td>
+                    <td>歌单 ID</td>
+                </tr>
+                <tr>
+                    <td><span class="param">num</span></td>
+                    <td class="type">int</td>
+                    <td>歌曲数量 (默认 100)</td>
+                </tr>
+            </table>
+            <div class="example">GET /api/playlist?id=8052190267</div>
+        </div>
+
+        <div class="endpoint">
+            <div class="endpoint-header">
+                <span class="method">GET</span>
+                <span class="path">/api/singer</span>
+            </div>
+            <p class="desc">获取歌手信息</p>
+            <table>
+                <tr>
+                    <th>参数</th>
+                    <th>类型</th>
+                    <th>说明</th>
+                </tr>
+                <tr>
+                    <td><span class="param">mid</span></td>
+                    <td class="type">string</td>
+                    <td>歌手 MID</td>
+                </tr>
+            </table>
+            <div class="example">GET /api/singer?mid=0025NhlN2yWrP4</div>
+        </div>
+
+        <h2>排行榜</h2>
+
+        <div class="endpoint">
+            <div class="endpoint-header">
+                <span class="method">GET</span>
+                <span class="path">/api/top</span>
+            </div>
+            <p class="desc">获取排行榜列表或指定排行榜详情</p>
+            <table>
+                <tr>
+                    <th>参数</th>
+                    <th>类型</th>
+                    <th>说明</th>
+                </tr>
+                <tr>
+                    <td><span class="param">id</span></td>
+                    <td class="type">int</td>
+                    <td>排行榜 ID，不传则返回所有榜单</td>
+                </tr>
+                <tr>
+                    <td><span class="param">num</span></td>
+                    <td class="type">int</td>
+                    <td>歌曲数量 (默认 100)</td>
+                </tr>
+            </table>
+            <div class="example">GET /api/top</div>
+            <div class="example">GET /api/top?id=4&num=50</div>
+        </div>
+
+        <h2>凭证管理</h2>
+
+        <div class="endpoint">
+            <div class="endpoint-header">
+                <span class="method">GET</span>
+                <span class="path">/api/credential</span>
+            </div>
+            <p class="desc">获取当前凭证信息</p>
+            <div class="example">GET /api/credential</div>
+        </div>
+
+        <div class="endpoint">
+            <div class="endpoint-header">
+                <span class="method">POST</span>
+                <span class="path">/api/refresh</span>
+            </div>
+            <p class="desc">手动刷新凭证（系统每小时自动刷新）</p>
+            <table>
+                <tr>
+                    <th>参数</th>
+                    <th>类型</th>
+                    <th>说明</th>
+                </tr>
+                <tr>
+                    <td><span class="param">force</span></td>
+                    <td class="type">bool</td>
+                    <td>强制刷新 (默认 false)</td>
+                </tr>
+            </table>
+            <div class="example">POST /api/refresh?force=true</div>
         </div>
 
         <footer>
