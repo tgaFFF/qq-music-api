@@ -26,11 +26,17 @@ async function getCredential(env) {
 }
 
 /**
- * Base64 解码
+ * Base64 解码 (支持 UTF-8 中文)
  */
 function base64Decode(str) {
     try {
-        return atob(str);
+        // atob 返回的是 Latin-1 字符串，需要转换为 UTF-8
+        const binaryString = atob(str);
+        const bytes = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+        }
+        return new TextDecoder('utf-8').decode(bytes);
     } catch {
         return "";
     }
