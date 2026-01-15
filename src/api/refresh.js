@@ -20,7 +20,11 @@ import { API_CONFIG } from "../lib/common.js";
  */
 async function refreshCredential(credential) {
     if (!credential.refresh_key) {
-        throw new Error("缺少 refresh_key");
+        throw new Error("缺少 refresh_key，请检查凭证是否包含 refresh_key 字段");
+    }
+
+    if (!credential.refresh_token) {
+        throw new Error("缺少 refresh_token，请检查凭证是否包含 refresh_token 字段");
     }
 
     const params = {
@@ -30,7 +34,11 @@ async function refreshCredential(credential) {
         musicid: credential.musicid,
     };
 
+    // 构建 common 参数，确保 tmeLoginType 与凭证中的 login_type 一致
     const common = buildCommonParams(credential);
+    // 覆盖 tmeLoginType，确保使用字符串格式
+    common.tmeLoginType = String(credential.login_type || 2);
+
     const requestData = {
         comm: common,
         "music.login.LoginServer.Login": {
@@ -39,6 +47,8 @@ async function refreshCredential(credential) {
             param: params,
         },
     };
+
+    console.log(`[Refresh] 刷新请求参数: musicid=${credential.musicid}, login_type=${credential.login_type}`);
 
     const signature = await generateSign(requestData);
     const url = `${API_CONFIG.endpoint}?sign=${signature}`;
@@ -59,7 +69,20 @@ async function refreshCredential(credential) {
     const result = data["music.login.LoginServer.Login"];
 
     if (!result || result.code !== 0) {
-        throw new Error(`刷新失败: code=${result?.code}`);
+        const code = result?.code;
+        let errorMsg = `刷新失败: code=${code}`;
+
+        // 常见错误码说明
+        if (code === 10006) {
+            errorMsg += " (refresh_token 无效或已过期，请重新登录获取新凭证)";
+        } else if (code === 1000) {
+            errorMsg += " (凭证已过期)";
+        } else if (code === 2000) {
+            errorMsg += " (签名无效)";
+        }
+
+        console.error(`[Refresh] ${errorMsg}`);
+        throw new Error(errorMsg);
     }
 
     return result.data;
@@ -87,8 +110,8 @@ async function doRefresh(db, force = false) {
 
     console.log(`[Refresh] 凭证剩余有效期: ${Math.floor(remainingTime / 3600)} 小时`);
 
-    // 如果剩余时间少于 24 小时或强制刷新
-    if (remainingTime < 24 * 3600 || force) {
+    // 如果剩余时间少于 48 小时或强制刷新（配合每天一次的 Cron 任务）
+    if (remainingTime < 48 * 3600 || force) {
         console.log("[Refresh] 开始刷新凭证...");
 
         const newData = await refreshCredential(credential);
