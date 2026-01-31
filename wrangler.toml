@@ -2,18 +2,21 @@ name = "qq-music-api"
 main = "src/index.js"
 compatibility_date = "2024-01-01"
 
-# D1 数据库绑定
+workers_dev = false
+preview_urls = false
+
+routes = [
+  { pattern = "jbjb.qzz.io", zone_name = "jbjb.qzz.io", custom_domain = true }
+]
+
 [[d1_databases]]
 binding = "DB"
 database_name = "qq-music-api"
-database_id = "55dd0f69-39dc-4582-a4cb-30212c9ffab3" 
+database_id = "55dd0f69-39dc-4582-a4cb-30212c9ffab3"
 
-# 定时刷新凭证 (每天凌晨 3 点)
 [triggers]
 crons = ["0 3 * * *"]
 
-
-# 开启日志
 [observability]
 [observability.logs]
 enabled = true
